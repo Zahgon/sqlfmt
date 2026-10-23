@@ -17,7 +17,7 @@ defaults:
 
 jobs:
   test:
-    name: ${{ matrix.os }} - ${{ matrix.py }}
+    name: ${{ matrix.os }} - rust ${{ matrix.rust }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,36 +25,19 @@ jobs:
         os:
           - ubuntu-latest
           - MacOs-latest
-          - Windows-latest
-        py:
-          - "3.14"
-          - "3.13"
-          - "3.12"
-          - "3.11"
-          - "3.10"
+        rust:
+          - stable
+          - "1.85"
     steps:
       - name: Check out Repo
         uses: actions/checkout@v7
         with:
           persist-credentials: false
 
-      - name: Set up Python ${{ matrix.py }}
-        id: setup-python
-        uses: actions/setup-python@v7
+      - name: Set up Rust ${{ matrix.rust }}
+        uses: dtolnay/rust-toolchain@master
         with:
-          python-version: ${{ matrix.py }}
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v10.3.0
-        with:
-          version: "0.13.4"
-          python-version: ${{ matrix.py }}
-          enable-cache: true
-
-      - name: Install python dependencies
-        run: |
-          uv sync --locked --group test
+          toolchain: ${{ matrix.rust }}
 
       - name: Run tests
-        run: |
-          uv run --no-sync pytest
+        run: cargo test --locked

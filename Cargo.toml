@@ -1,0 +1,30 @@
+[package]
+name = "sqlfmt"
+version = "0.32.0"
+edition = "2021"
+rust-version = "1.85"
+description = "sqlfmt formats your dbt SQL files so you don't have to."
+license = "Apache-2.0"
+readme = "README.md"
+homepage = "https://sqlfmt.com"
+repository = "https://github.com/tconbeer/sqlfmt"
+authors = ["Ted Conbeer <tconbeer@users.noreply.github.com>"]
+keywords = ["sql", "formatter", "dbt", "jinja"]
+categories = ["command-line-utilities", "development-tools"]
+
+[lib]
+name = "sqlfmt"
+path = "src/lib.rs"
+
+[[bin]]
+name = "sqlfmt"
+path = "src/main.rs"
+
+[dependencies]
+fancy-regex = "0.19.2"
+regex = "1.12.2"
+toml = { version = "0.8.23", default-features = false, features = ["parse", "preserve_order"] }
+
+[profile.release]
+lto = true
+codegen-units = 1

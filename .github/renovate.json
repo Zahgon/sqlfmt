@@ -3,9 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "constraints": {
-    "python": ">=3.10"
-  },
   "automerge": true,
   "automergeStrategy": "squash",
   "platformAutomerge": true,
@@ -25,16 +22,6 @@
     "labels": ["security"]
   },
   "packageRules": [
-    {
-      "description": "Never bump the Python interpreter; sqlfmt supports 3.10+",
-      "matchDepNames": ["python"],
-      "enabled": false
-    },
-    {
-      "description": "Belt and braces: the interpreter pin is managed by hand",
-      "matchFileNames": [".python-version"],
-      "enabled": false
-    },
     {
       "description": "One PR for everything that isn't a major bump",
       "groupName": "all non-major dependencies",

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Rewritten in Rust
+
+- sqlfmt is now a Rust program built with Cargo (`cargo install --path .`). The command line, its options,
+  environment variables, `pyproject.toml` configuration, reports, diffs, exit codes and formatting are unchanged.
+- Jinja tags are formatted without the `jinjafmt` extra: single-line tags get normalized whitespace and the code
+  inside the curlies is left as written. `--no-jinjafmt` is still accepted.
+- The `sqlfmt_primer` development tool has been removed.
+
 ## [0.32.0] - 2026-08-10
 
 ### Formatting Changes and Bug Fixes

@@ -1,8 +1,12 @@
-FROM python:3-slim
+FROM rust:1-slim AS build
 
-COPY dist/*.whl .
-RUN pip install $(find . -name "*.whl")[jinjafmt]
-RUN rm *.whl
+WORKDIR /build
+COPY . .
+RUN cargo build --release --locked
+
+FROM debian:stable-slim
+
+COPY --from=build /build/target/release/sqlfmt /usr/local/bin/sqlfmt
 
 RUN mkdir /src
 WORKDIR /src

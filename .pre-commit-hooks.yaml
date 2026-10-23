@@ -1,6 +1,6 @@
 - id: sqlfmt
   name: sqlfmt
   entry: sqlfmt
-  language: python
+  language: rust
   require_serial: true
   types_or: [sql, jinja]

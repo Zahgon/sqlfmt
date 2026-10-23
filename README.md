@@ -1,11 +1,9 @@
 # sqlfmt
 
-[![PyPI](https://img.shields.io/pypi/v/shandy-sqlfmt)](https://pypi.org/project/shandy-sqlfmt/)
 [![Downloads](https://static.pepy.tech/personalized-badge/shandy-sqlfmt?period=month&units=international_system&left_color=grey&right_color=orange&left_text=downloads/mo)](https://pepy.tech/project/shandy-sqlfmt)
 [![Test](https://github.com/tconbeer/sqlfmt/actions/workflows/test.yml/badge.svg?branch=main&event=push)](https://github.com/tconbeer/sqlfmt/actions/workflows/test.yml)
 
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/shandy-sqlfmt)
-![Runs on Linux | MacOS | Windows](https://img.shields.io/badge/runs%20on-Linux%20%7C%20MacOS%20%7C%20Windows-blue)
+![Runs on Linux | MacOS](https://img.shields.io/badge/runs%20on-Linux%20%7C%20MacOS-blue)
 
 
 sqlfmt formats your dbt SQL files so you don't have to. It is similar in nature to black, gofmt, 
@@ -14,7 +12,7 @@ and rustfmt (but for SQL).
 1. **sqlfmt promotes collaboration.** An auto-formatter makes it easier to collaborate with your team and solicit contributions from new people. You will never have to mention (or argue about) code style in code reviews again.
 2. **sqlfmt is fast.** Forget about formatting your code, and spend your time on business logic instead. sqlfmt processes hundreds of files per second and only operates on files that have changed since the last run.
 3. **sqlfmt works with Jinja.** It formats the code that users look at, and therefore doesn't need to know anything about what happens after the templates are rendered.
-3. **sqlfmt integrates with your workflow.** As a CLI written in Python, it's easy to install locally on any OS and run in CI. Plays well with dbt, pre-commit, SQLFluff, VSCode, and GitHub Actions. sqlfmt powers the dbt Cloud IDE's Format button.
+3. **sqlfmt integrates with your workflow.** As a single self-contained binary, it's easy to install locally on any OS and run in CI. Plays well with dbt, pre-commit, SQLFluff, VSCode, and GitHub Actions. sqlfmt powers the dbt Cloud IDE's Format button.
 
 sqlfmt is not configurable, except for line length. It enforces a single style. sqlfmt maintains comments and some extra newlines, but largely ignores all indentation and line breaks in the input file.
 
@@ -31,63 +29,30 @@ Please visit [docs.sqlfmt.com](https://docs.sqlfmt.com) for more information on 
 #### Try it first
 Want to test out sqlfmt on a query before you install it? Go to [sqlfmt.com](https://sqlfmt.com) to use the interactive, web-based version.
 
-#### Recommended Installation: Use uv
+#### Install from source with Cargo
 
-sqlfmt is a command-line tool that is built in Python and runs on MacOS, Linux, and Windows. It is distributed
-on PyPI under the name `shandy-sqlfmt`. There are many ways to install and run it, but we strongly 
-recommend using [uv](https://docs.astral.sh/uv):
+sqlfmt is a command-line tool written in Rust that runs on MacOS and Linux. To build and install it,
+[install Rust](https://www.rust-lang.org/tools/install) (1.85 or newer), then, from a checkout of this repository, run:
 
-1. [Install uv](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer). From a POSIX shell, run:
+```bash
+cargo install --path .
+```
 
-    ```bash
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    ```
+This builds the `sqlfmt` binary and puts it in Cargo's `bin` directory (usually `~/.cargo/bin`), which should be on
+your PATH. Test the installation; run sqlfmt with no arguments:
 
-    Or using Windows Powershell:
+```bash
+sqlfmt
+```
 
-    ```pwsh
-    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-    ```
-
-2. Install sqlfmt as a tool using uv:
-
-    ```bash
-    uv tool install "shandy-sqlfmt[jinjafmt]"
-    ```
-
-    This command will install sqlfmt into an isolated environment and add it to your PATH so you can easily run the executable.
-
-    :::tip
-    Depending on your shell and OS, you may need single or double quotes around `shandy-sqlfmt[jinjafmt]`.
-    :::
-
-3. Test the installation; run sqlfmt with no arguments:
-
-    ```bash
-    sqlfmt
-    ```
-
-    You should see some ASCII art and help text.
-
-:::warning PyPI Names
-The PyPI distribtuion is `shandy-sqlfmt`, NOT `sqlfmt`, which is a different (unrelated but not malicious) package.
-This is unfortunate, but the author cannot do anything about it.
-:::
+You should see some ASCII art and help text.
 
 #### Other Installation Options
 
-1. **Use pip or something pip-like:**
+1. **Build a binary in place:** `cargo build --release` writes the binary to `target/release/sqlfmt`.
 
-    If you know what you’re doing, after installing Python 3.9 or above and activating your virtual environment, install `shandy-sqlfmt` using pip, pipx, poetry, or any other program that can install Python packages from PyPI:
-
-    ```bash
-    pip install "shandy-sqlfmt[jinjafmt]"
-    ```
-
-2. **Use Docker**
-
-    You can skip installation altogether and pull the official Docker image instead. See [the docs](./using-container) on running sqlfmt in a container.
-
+2. **Use Docker:** the `Dockerfile` in this repository builds an image that runs `sqlfmt .` in its `/src`
+   directory; mount your project there.
 
 ### Using sqlfmt
 
@@ -98,7 +63,7 @@ For more on sqlfmt's maturity see [Maturity and Stability](https://sqlfmt.com/do
 :::
 
 
-sqlfmt is a command-line tool. It works on any posix terminal and on Windows Powershell. If you have used the Python code formatter *Black*, the sqlfmt commands will look familiar. 
+sqlfmt is a command-line tool. It works on any posix terminal. If you have used the code formatter *Black*, the sqlfmt commands will look familiar. 
 
 :::tip
 The code snippets below are commands that can be typed into your terminal, after installing sqlfmt.
@@ -133,11 +98,11 @@ echo "select 1" | sqlfmt -
 
 Any command-line option for sqlfmt can also be set in a `pyproject.toml` file, under a `[tool.sqlfmt]` section header. Options passed at the command line will override the settings in the config file. [See the docs](https://docs.sqlfmt.com/getting-started/configuring-sqlfmt) for more information.
 
-#### The jinjafmt extra
+#### Jinja tags
 
-sqlfmt loves properly-formatted jinja, too.
-
-[See the docs](https://docs.sqlfmt.com/getting-started/formatting-jinja) for more information about using the `jinjafmt` extra or disabling jinja formatting.
+sqlfmt formats the SQL around jinja tags and normalizes the whitespace inside single-line tags
+(`{{foo}}` becomes `{{ foo }}`); the code between the curlies is otherwise left as written. The `--no-jinjafmt`
+option is accepted for compatibility and has no effect.
 
 ### Using sqlfmt with different SQL dialects
 
@@ -197,8 +162,6 @@ Using trailing commas follows the convention of every other written language and
 
 ## Contributing
 
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/8928f6662a67b8eaf092/maintainability)](https://codeclimate.com/github/tconbeer/sqlfmt/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/8928f6662a67b8eaf092/test_coverage)](https://codeclimate.com/github/tconbeer/sqlfmt/test_coverage)
 
@@ -208,18 +171,6 @@ We'd love to hear from you! [Open an Issue](https://github.com/tconbeer/sqlfmt/i
 
 ### Setting up Your Dev Environment and Running Tests
 
-1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) You may also need or want make.
+1. Install [Rust](https://www.rust-lang.org/tools/install) (1.85 or newer, with `rustfmt` and `clippy`). You may also need or want make.
 1. Clone this repo into a directory (let's call it `sqlfmt`), then `cd sqlfmt`.
-1. Use `uv sync --all-groups --all-extras` to install the project (editable) and its dependencies (including the `jinjafmt` and `sqlfmt_primer` extras) into a new virtual env.
-1. Type `make` to run all tests and linters, or run `pytest`, `ruff`, and `mypy` individually, using `uv` (e.g., `uv run pytest`).
-
-### Updating primer repos to reflect formatting changes
-
-1. Make sure all changes are committed to sqlfmt.
-1. Check out `main` in the repo and make sure you `pull` changes locally.
-1. Check out the `unformatted` tag in the repo with `git checkout -b chore/apply-abc123 unformatted` where `abc123` is the hash of the most recent sqlfmt commit (from 1).
-1. Run sqlfmt against the working tree, then `git add .` and `git commit -m "chore: apply sqlfmt abc123"`.
-1. We will have conflicts with main that we want to ignore, so merge main into this branch, ignoring anything on main: `git merge -s ours main`.
-1. Push and open a PR; squash and merge. Grab the commit SHA.
-1. Paste the commit SHA as a ref into `primer.py`.
-1. Run `sqlfmt_primer -k` to clear the cache, then update the stats in `primer.py` to match the results.
+1. Type `make` to run all tests and linters, or run `cargo test`, `cargo fmt --check` and `cargo clippy` individually.
